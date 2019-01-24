@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+Take a CSV file containing landing URLs and archive all children URLs using
+wayback machine
+
+usage: python run
+
+(c) Javier Arias, Open Book Publishers, January 2018
+Use of this software is governed by the terms of the MIT license
+
+Dependencies:
+  urllib3==1.20
+"""
+
+import os
+import csv
+import urllib2
+import subprocess
+
+
+CSV_LOC_URL = os.environ['CSV_LOC_URL']
+CSV_URL_COL = int(os.environ['CSV_URL_COL'])
+
+
+def get_csv():
+    return urllib2.urlopen(CSV_LOC_URL)
+
+
+def process_csv(urls_file):
+    buff = csv.reader(urls_file)
+    for row in buff:
+        url = row[CSV_URL_COL]
+
+        try:
+            assert url
+        except AssertionError:
+            continue
+
+        cmd = "geturls %s | archiveurl" % (url)
+        process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
+                                   stderr=subprocess.STDOUT)
+        output = process.communicate()[0]
+        print output
+        #  url_list= subprocess.Popen(('geturls', url), stdout=subprocess.PIPE)
+        #  subprocess.check_output(('archiveurl'), stdin=url_list.stdout)
+        #  url_list.wait()
+
+
+def run():
+    urls_file = get_csv()
+    assert urls_file
+    process_csv(urls_file)
+
+
+if __name__ == '__main__':
+    run()
