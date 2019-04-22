@@ -1,7 +1,6 @@
-FROM python:2
+FROM python:3
 
-RUN apt-get update && apt-get upgrade -y && apt-get install curl&& \
-    pip install --upgrade pip
+RUN apt-get update && apt-get install -y curl
 
 WORKDIR /usr/src/app
 
