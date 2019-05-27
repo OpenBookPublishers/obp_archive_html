@@ -26,7 +26,7 @@ CSV_URL_COL = int(os.environ['CSV_URL_COL'])
 
 
 def get_csv():
-    return urllib.request.urlopen(CSV_LOC_URL)
+    return urllib.request.urlopen(CSV_LOC_URL).read().decode('utf-8')
 
 
 def process_csv(urls_file):
